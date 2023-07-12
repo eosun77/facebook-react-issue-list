@@ -1,30 +1,17 @@
-import React, { useEffect } from 'react';
-import { useIssue } from '../../context/IssueContext';
-import IssueItem from '../IssueItem/IssueItem';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import IssueItem from '../../component/IssueItem/IssueItem';
 import { IssueDetailHeader } from './style';
 import Markdown from 'markdown-to-jsx';
 
-import Loading from '../Loading/Loading';
-import { getIssueDetail } from '../../api/issue';
+import Loading from '../../component/Loading/Loading';
+import { useIssueDetail } from '../../hooks/useIssueDetail';
+import { useIssue } from '../../context/IssueContext';
 
 function IssueDetail() {
   const { state, dispatch } = useIssue();
-  const { number } = useParams();
+  const { issueNumber } = useIssueDetail(state, dispatch);
 
-  useEffect(() => {
-    if (state.issue.number !== parseInt(number)) {
-      getIssueDetail(state.owner, state.repo, number)
-        .then((res) => {
-          dispatch({ type: 'GET_ISSUE', payload: res });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [dispatch, number, state.issue.number, state.owner, state.repo]);
-
-  return state.issue.number === parseInt(number) ? (
+  return state.issue.number === issueNumber ? (
     <>
       <IssueDetailHeader>
         <img
@@ -33,7 +20,6 @@ function IssueDetail() {
           height="78px"
           alt="profile"
         />
-
         <IssueItem
           key={state.issue.id}
           number={state.issue.number}

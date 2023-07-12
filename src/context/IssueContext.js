@@ -2,13 +2,13 @@
 // issues
 // get
 
-import { createContext, useContext, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
+import { getRepo } from '../api/issue';
 
 const IssueContext = createContext(null);
 
 const initialState = {
-  owner: 'facebook',
-  repo: 'react',
+  repo: '',
   issues: [],
   issue: {},
 };
@@ -35,6 +35,11 @@ const issueReducer = (state, action) => {
         ...state,
         issue: action.payload,
       };
+    case 'GET_REPO':
+      return {
+        ...state,
+        repo: action.payload,
+      };
     default:
       return state;
   }
@@ -44,6 +49,12 @@ export const useIssue = () => useContext(IssueContext);
 
 export function IssueProvider({ children }) {
   const [state, dispatch] = useReducer(issueReducer, initialState);
+
+  useEffect(() => {
+    getRepo().then((res) => {
+      dispatch({ type: 'GET_REPO', payload: res.full_name });
+    });
+  }, []);
 
   return (
     <IssueContext.Provider value={{ state, dispatch }}>
