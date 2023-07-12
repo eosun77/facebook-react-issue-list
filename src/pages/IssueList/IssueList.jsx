@@ -1,12 +1,12 @@
 import React from 'react';
-import IssueItem from '../../component/IssueItem/IssueItem';
-import Loading from '../../component/Loading/Loading';
+import IssueItem from '../../components/IssueItem/IssueItem';
+import Loading from '../../components/Loading/Loading';
 
 import { useIssueList } from '../../hooks/useIssueList';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import useIssueNavigate from '../../hooks/useIssueNavigate';
-import { useIssue } from '../../context/IssueContext';
-import Ad from '../../component/Ad/Ad';
+import { useIssue } from '../../contexts/IssueContext';
+import Ad from '../../components/Ad/Ad';
 
 function IssueList() {
   const { state, dispatch } = useIssue();

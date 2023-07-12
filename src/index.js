@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import { IssueProvider } from './context/IssueContext';
+import { IssueProvider } from './contexts/IssueContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 

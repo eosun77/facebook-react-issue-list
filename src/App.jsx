@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import GlobalStyle from './globalStyle';
-import Layout from './Layout';
-import IssueList from './page/IssueList/IssueList';
-import IssueDetail from './page/IssueDetail/IssueDetail';
-import Error from './page/Error/Error';
+import Layout from './components/Layout';
+import IssueList from './pages/IssueList/IssueList';
+import IssueDetail from './pages/IssueDetail/IssueDetail';
+import Error from './pages/Error/Error';
 
 function App() {
   return (

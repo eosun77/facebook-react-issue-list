@@ -1,11 +1,11 @@
 import React from 'react';
-import IssueItem from '../../component/IssueItem/IssueItem';
+import IssueItem from '../../components/IssueItem/IssueItem';
 import { IssueDetailHeader } from './style';
 import Markdown from 'markdown-to-jsx';
 
-import Loading from '../../component/Loading/Loading';
+import Loading from '../../components/Loading/Loading';
 import { useIssueDetail } from '../../hooks/useIssueDetail';
-import { useIssue } from '../../context/IssueContext';
+import { useIssue } from '../../contexts/IssueContext';
 
 function IssueDetail() {
   const { state, dispatch } = useIssue();

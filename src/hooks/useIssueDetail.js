@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { getIssueDetail } from '../api/issue';
+import { getIssueDetail } from '../apis/issue';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export const useIssueDetail = (state, dispatch) => {
