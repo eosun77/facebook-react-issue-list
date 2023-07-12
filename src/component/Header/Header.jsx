@@ -4,11 +4,7 @@ import { useIssue } from '../../context/IssueContext';
 
 function Header() {
   const { state } = useIssue();
-  return (
-    <HeaderWrapper>
-      {state.owner} / {state.repo}
-    </HeaderWrapper>
-  );
+  return <HeaderWrapper>{state.repo}</HeaderWrapper>;
 }
 
 export default Header;

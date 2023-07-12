@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-import { useIssue } from '../context/IssueContext';
 import { getIssueDetail } from '../api/issue';
 import { useNavigate, useParams } from 'react-router-dom';
 
-export const useIssueDetail = () => {
-  const { state, dispatch } = useIssue();
+export const useIssueDetail = (state, dispatch) => {
   const { number } = useParams();
   const navigate = useNavigate();
 
@@ -12,7 +10,7 @@ export const useIssueDetail = () => {
 
   useEffect(() => {
     if (state.issue.number !== issueNumber) {
-      getIssueDetail(state.owner, state.repo, number)
+      getIssueDetail(number)
         .then((res) => {
           dispatch({ type: 'GET_ISSUE', payload: res });
         })
@@ -20,15 +18,7 @@ export const useIssueDetail = () => {
           navigate('/error', { state: { errorStatus: err.status } })
         );
     }
-  }, [
-    dispatch,
-    issueNumber,
-    navigate,
-    number,
-    state.issue.number,
-    state.owner,
-    state.repo,
-  ]);
+  }, [dispatch, issueNumber, navigate, number, state.issue.number]);
 
-  return { issue: state.issue, issueNumber };
+  return { issueNumber };
 };

@@ -11,15 +11,14 @@ import Ad from '../../component/Ad/Ad';
 function IssueList() {
   const { state, dispatch } = useIssue();
   const { target, page } = useInfiniteScroll();
-  const { loading } = useIssueList(page, state, dispatch);
+  const { loading } = useIssueList(page, dispatch);
   const { handleDetailClick } = useIssueNavigate(dispatch);
 
   return (
     <>
       {state.issues.map((issue, index) => (
-        <>
+        <div key={issue.id}>
           <IssueItem
-            key={issue.id}
             id={issue.number}
             number={issue.number}
             createdAt={issue.created_at}
@@ -29,7 +28,7 @@ function IssueList() {
             clickEvent={() => handleDetailClick(issue.number)}
           />
           {index % 4 === 3 && <Ad />}
-        </>
+        </div>
       ))}
       {loading ? <Loading /> : <div ref={target} />}
     </>
