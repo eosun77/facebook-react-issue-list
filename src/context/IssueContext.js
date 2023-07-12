@@ -3,7 +3,7 @@
 // get
 
 import { createContext, useContext, useEffect, useReducer } from 'react';
-import { getRepo } from '../api/issue';
+import { getRepo } from '../apis/issue';
 
 const IssueContext = createContext(null);
 

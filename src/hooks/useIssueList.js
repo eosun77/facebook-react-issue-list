@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getIssues } from '../api/issue';
+import { getIssues } from '../apis/issue';
 import { useNavigate } from 'react-router-dom';
 
 export const useIssueList = (page, dispatch) => {
