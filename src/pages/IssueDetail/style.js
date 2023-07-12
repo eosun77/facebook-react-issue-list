@@ -4,7 +4,7 @@ const IssueDetailHeader = styled.div`
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
-  width: calc(100% - 12px);
+  width: calc(100% - 48px);
 `;
 
 const IssueDetailContent = styled.div`
