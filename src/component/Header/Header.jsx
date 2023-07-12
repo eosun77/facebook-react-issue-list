@@ -3,10 +3,10 @@ import { HeaderWrapper } from './style';
 import { useIssue } from '../../context/IssueContext';
 
 function Header() {
-  const { owner, repo } = useIssue();
+  const { state } = useIssue();
   return (
     <HeaderWrapper>
-      {owner} / {repo}
+      {state.owner} / {state.repo}
     </HeaderWrapper>
   );
 }

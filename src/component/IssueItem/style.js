@@ -9,16 +9,16 @@ const IssueItemHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 8px;
   align-items: center;
-
-  :hover {
-    cursor: pointer;
-    color: var(--blue-color);
-  }
 `;
 
 const IssueItemTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
+
+  &:hover {
+    cursor: pointer;
+    color: var(--blue-color);
+  }
 `;
 
 const IssueItemInfo = styled.div`

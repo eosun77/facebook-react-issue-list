@@ -2,24 +2,40 @@
 // issues
 // get
 
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useReducer } from 'react';
 
 const IssueContext = createContext(null);
 
+const initialState = {
+  owner: 'facebook',
+  repo: 'react',
+  issues: [],
+};
+
+const issueReducer = (state, action) => {
+  switch (action.type) {
+    case 'INITIAL_ISSUES':
+      return {
+        ...state,
+        issues: [...action.payload],
+      };
+    case 'ADD_ISSUES':
+      return {
+        ...state,
+        issues: [...state.issues, ...action.payload],
+      };
+    default:
+      return state;
+  }
+};
+
 export const useIssue = () => useContext(IssueContext);
 
-export function IssueProvider({ children, issueService }) {
-  const [issues, setIssues] = useState([]);
-  const [page, setPage] = useState(1);
-  const owner = 'facebook';
-  const repo = 'react';
-
-  useEffect(() => {
-    issueService.get(owner, repo, page).then((res) => setIssues(res));
-  }, [issueService, owner, page, repo]);
+export function IssueProvider({ children }) {
+  const [state, dispatch] = useReducer(issueReducer, initialState);
 
   return (
-    <IssueContext.Provider value={{ issues, page, setPage, owner, repo }}>
+    <IssueContext.Provider value={{ state, dispatch }}>
       {children}
     </IssueContext.Provider>
   );
