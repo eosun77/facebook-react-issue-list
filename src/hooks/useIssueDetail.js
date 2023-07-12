@@ -15,7 +15,7 @@ export const useIssueDetail = (state, dispatch) => {
           dispatch({ type: 'GET_ISSUE', payload: res });
         })
         .catch((err) =>
-          navigate('/error', { state: { errorStatus: err.status } })
+          navigate('/error', { state: { errorStatus: err.status } }),
         );
     }
   }, [dispatch, issueNumber, navigate, number, state.issue.number]);

@@ -17,7 +17,7 @@ export const useIssueList = (page, dispatch) => {
         }
       })
       .catch((err) =>
-        navigate('/error', { state: { errorStatus: err.status } })
+        navigate('/error', { state: { errorStatus: err.status } }),
       )
       .finally(() => setLoading(false));
   }, [dispatch, navigate, page]);
