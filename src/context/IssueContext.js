@@ -10,6 +10,7 @@ const initialState = {
   owner: 'facebook',
   repo: 'react',
   issues: [],
+  issue: {},
 };
 
 const issueReducer = (state, action) => {
@@ -23,6 +24,16 @@ const issueReducer = (state, action) => {
       return {
         ...state,
         issues: [...state.issues, ...action.payload],
+      };
+    case 'FIND_ISSUE':
+      return {
+        ...state,
+        issue: state.issues.find((issue) => issue.number === action.payload),
+      };
+    case 'GET_ISSUE':
+      return {
+        ...state,
+        issue: action.payload,
       };
     default:
       return state;

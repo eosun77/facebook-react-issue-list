@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 const IssueItemWrapper = styled.div`
+  width: inherit;
   padding: 12px 24px;
 `;
 
@@ -15,10 +16,15 @@ const IssueItemTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
 
-  &:hover {
-    cursor: pointer;
-    color: var(--blue-color);
-  }
+  ${(props) =>
+    props.onClick &&
+    css`
+      cursor: pointer;
+
+      &:hover {
+        color: var(--blue-color);
+      }
+    `}
 `;
 
 const IssueItemInfo = styled.div`

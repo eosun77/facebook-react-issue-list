@@ -11,3 +11,10 @@ export const getIssues = async (owner, repo, page) => {
   );
   return response.data;
 };
+
+export const getIssueDetail = async (owner, repo, id) => {
+  const response = await axiosInstance.get(
+    `repos/${owner}/${repo}/issues/${id}`
+  );
+  return response.data;
+};

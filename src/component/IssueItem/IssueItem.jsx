@@ -6,11 +6,18 @@ import {
   IssueItemWrapper,
 } from './style';
 
-function IssueItem({ number, createdAt, title, userName, comments }) {
+function IssueItem({
+  number,
+  createdAt,
+  title,
+  userName,
+  comments,
+  clickEvent,
+}) {
   return (
     <IssueItemWrapper>
       <IssueItemHeader>
-        <IssueItemTitle>
+        <IssueItemTitle onClick={clickEvent}>
           #{number} {title}
         </IssueItemTitle>
         <IssueItemInfo>코멘트: {comments}</IssueItemInfo>
