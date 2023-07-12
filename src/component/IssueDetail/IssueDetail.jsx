@@ -1,49 +1,34 @@
-import React, { useEffect } from 'react';
-import { useIssue } from '../../context/IssueContext';
+import React from 'react';
 import IssueItem from '../IssueItem/IssueItem';
-import { useParams } from 'react-router-dom';
 import { IssueDetailHeader } from './style';
 import Markdown from 'markdown-to-jsx';
 
 import Loading from '../Loading/Loading';
-import { getIssueDetail } from '../../api/issue';
+import { useIssueDetail } from '../../hooks/useIssueDetail';
 
 function IssueDetail() {
-  const { state, dispatch } = useIssue();
-  const { number } = useParams();
+  const { issue, issueNumber } = useIssueDetail();
 
-  useEffect(() => {
-    if (state.issue.number !== parseInt(number)) {
-      getIssueDetail(state.owner, state.repo, number)
-        .then((res) => {
-          dispatch({ type: 'GET_ISSUE', payload: res });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [dispatch, number, state.issue.number, state.owner, state.repo]);
-
-  return state.issue.number === parseInt(number) ? (
+  return issue.number === issueNumber ? (
     <>
       <IssueDetailHeader>
         <img
-          src={state.issue.user.avatar_url}
+          src={issue.user.avatar_url}
           width="78px"
           height="78px"
           alt="profile"
         />
 
         <IssueItem
-          key={state.issue.id}
-          number={state.issue.number}
-          createdAt={state.issue.created_at}
-          title={state.issue.title}
-          userName={state.issue.user.login}
-          comments={state.issue.comments}
+          key={issue.id}
+          number={issue.number}
+          createdAt={issue.created_at}
+          title={issue.title}
+          userName={issue.user.login}
+          comments={issue.comments}
         />
       </IssueDetailHeader>
-      <Markdown style={{ padding: '12px 24px' }}>{state.issue.body}</Markdown>
+      <Markdown style={{ padding: '12px 24px' }}>{issue.body}</Markdown>
     </>
   ) : (
     <Loading />

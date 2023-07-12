@@ -3,6 +3,7 @@ import GlobalStyle from './globalStyle';
 import Layout from './Layout';
 import IssueList from './component/IssueList/IssueList';
 import IssueDetail from './component/IssueDetail/IssueDetail';
+import Error from './component/Error/Error';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route index element={<IssueList />} />
           <Route path="/detail/:number" element={<IssueDetail />} />
         </Route>
+        <Route path="*" element={<Error />} />
       </Routes>
     </BrowserRouter>
   );
