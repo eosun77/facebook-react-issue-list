@@ -1,9 +1,9 @@
 import React from 'react';
-import IssueItem from '../IssueItem/IssueItem';
+import IssueItem from '../../component/IssueItem/IssueItem';
 import { IssueDetailHeader } from './style';
 import Markdown from 'markdown-to-jsx';
 
-import Loading from '../Loading/Loading';
+import Loading from '../../component/Loading/Loading';
 import { useIssueDetail } from '../../hooks/useIssueDetail';
 
 function IssueDetail() {
