@@ -4,7 +4,6 @@ export const useInfiniteScroll = () => {
   const [page, setPage] = useState(1);
   const observer = useRef();
 
-  // Infinite scrolling
   const target = useCallback((node) => {
     if (observer.current) observer.current.disconnect();
     observer.current = new IntersectionObserver((entries) => {
