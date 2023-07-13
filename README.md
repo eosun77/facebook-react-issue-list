@@ -1,70 +1,174 @@
-# Getting Started with Create React App
+# facebook/react Issue List
+> 특정 깃헙 레파지토리[(facebook/react)](https://github.com/facebook/react)의 이슈 목록과 상세 내용을 확인하는 웹 사이트 구축
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+![pre](https://github.com/eosun77/facebook-react-issue-list/assets/100937653/44f8fd72-26ff-4c61-a113-9c358c59affc)
 
-## Available Scripts
+## 목차
+- [시작하기](#시작하기)
 
-In the project directory, you can run:
+## 시작하기
+```
+git clone https://github.com/eosun77/wanted-pre-onboarding-frontend.git
+```
+`.env` 파일을 `facebook-react-issue-list` 폴더에 생성합니다.
+```.env
+REACT_APP_GITHUB_TOKEN = <your github token>
+REACT_APP_BASE_URL = "https://api.github.com/repos/facebook/react"
+```
+`facebook-react-issue-list` 폴더에서 실행합니다.
+```
+npm install
+npm start
+```
 
-### `npm start`
+## 기능 목록
+### 1. 인피니티 스크롤
+![infinityscroll](https://github.com/eosun77/facebook-react-issue-list/assets/100937653/f01ab1e6-6d1a-45d7-bd2b-49054e20a541)
+- IntersectionObserver API를 사용하여 useInfiniteScroll 커스텀 훅으로 구현
+- 화면을 아래로 스크롤 할 시 이슈 목록 추가 로딩
+  
+```js
+// useInfiniteScroll.js
+export const useInfiniteScroll = () => {
+const [page, setPage] = useState(1);
+const observer = useRef();
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+const target = useCallback((node) => {
+  if (observer.current) observer.current.disconnect();
+  observer.current = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) {
+      setPage((prevPage) => prevPage + 1);
+    }
+  });
+  if (node) observer.current.observe(node);
+}, []);
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+return { page, target };
+};
+```
 
-### `npm test`
+```js
+// IssueList.jsx
+function IssueList() {
+  const { state, dispatch } = useIssue();
+  const { target, page } = useInfiniteScroll();
+  const { loading } = useIssueList(page, dispatch);
+  const { handleDetailClick } = useIssueNavigate(dispatch);
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+  return (
+    <>
+      {state.issues.map((issue, index) => (
+        <div key={issue.id}>
+          <IssueItem
+            id={issue.number}
+            number={issue.number}
+            createdAt={issue.created_at}
+            title={issue.title}
+            userName={issue.user.login}
+            comments={issue.comments}
+            clickEvent={() => handleDetailClick(issue.number)}
+          />
+          {index % 4 === 3 && <Ad />}
+        </div>
+      ))}
+      {loading ? <Loading /> : <div ref={target} />}
+    </>
+  );
+}
+```
+### 2. 이슈 목록 상세 화면
+![detail](https://github.com/eosun77/facebook-react-issue-list/assets/100937653/c344a03b-5033-401b-b878-cd148dd49438)
+- 이슈 리스트에서 상세 화면 이동시 `number`로 issues에서 클릭한 issue를 찾아서 표시
 
-### `npm run build`
+```js
+// useIssueNavigate.js
+export default function useIssueNavigate(dispatch) {
+  const navigate = useNavigate();
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+  const handleDetailClick = (number) => {
+    dispatch({ type: 'FIND_ISSUE', payload: number });
+    navigate(`/detail/${number}`);
+  };
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+  return { handleDetailClick };
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 페이지를 새로고침하거나 `/detail/${number}`로 다이렉트로 이동시 서버에서 상세 정보를 받아와서 표시
 
-### `npm run eject`
+```js
+// useIssueDetail.js
+export const useIssueDetail = (state, dispatch) => {
+  const { number } = useParams();
+  const navigate = useNavigate();
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+  const issueNumber = parseInt(number);
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+  useEffect(() => {
+    if (state.issue.number !== issueNumber) {
+      getIssueDetail(number)
+        .then((res) => {
+          dispatch({ type: 'GET_ISSUE', payload: res });
+        })
+        .catch((err) =>
+          navigate('/error', { state: { errorStatus: err.status } }),
+        );
+    }
+  }, [dispatch, issueNumber, navigate, number, state.issue.number]);
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+  return { issueNumber };
+};
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 3. 상태관리
+- useContext()를 사용하여 효율적인 props 전달
+- useReducer 사용
+```js
+const issueReducer = (state, action) => {
+  switch (action.type) {
+    case 'INITIAL_ISSUES':
+      return {
+        ...state,
+        issues: formatIssues(action.payload),
+      };
+    case 'ADD_ISSUES':
+      return {
+        ...state,
+        issues: [...state.issues, ...formatIssues(action.payload)],
+      };
+    case 'FIND_ISSUE':
+      return {
+        ...state,
+        issue: findIssue(state.issues, action.payload),
+      };
+    case 'GET_ISSUE':
+      return {
+        ...state,
+        issue: formatIssue(action.payload),
+      };
+    case 'GET_REPO':
+      return {
+        ...state,
+        repo: action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
-## Learn More
+export function IssueProvider({ children }) {
+  const [state, dispatch] = useReducer(issueReducer, initialState);
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  useEffect(() => {
+    getRepo().then((res) => {
+      dispatch({ type: 'GET_REPO', payload: res.full_name });
+    });
+  }, []);
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  return (
+    <IssueContext.Provider value={{ state, dispatch }}>
+      {children}
+    </IssueContext.Provider>
+  );
+}
+```
