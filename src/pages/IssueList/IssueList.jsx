@@ -7,6 +7,7 @@ import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import useIssueNavigate from '../../hooks/useIssueNavigate';
 import { useIssue } from '../../contexts/IssueContext';
 import Ad from '../../components/Ad/Ad';
+import dateFormatter from '../../util/dateFormatter';
 
 function IssueList() {
   const { state, dispatch } = useIssue();
@@ -21,7 +22,7 @@ function IssueList() {
           <IssueItem
             id={issue.number}
             number={issue.number}
-            createdAt={issue.created_at}
+            createdAt={dateFormatter(issue.created_at)}
             title={issue.title}
             userName={issue.user.login}
             comments={issue.comments}
