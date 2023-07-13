@@ -121,7 +121,7 @@ export const useIssueDetail = (state, dispatch) => {
 ```
 
 ### 3. 상태관리
-- useContext()를 사용하여 효율적인 props 전달
+- useContext()를 사용하여 효율적인 전달
 - useReducer 사용
 ```js
 const issueReducer = (state, action) => {
