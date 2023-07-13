@@ -4,6 +4,7 @@
 
 import { createContext, useContext, useEffect, useReducer } from 'react';
 import { getRepo } from '../apis/issue';
+import dateFormatter from '../util/dateFormatter';
 
 const IssueContext = createContext(null);
 
@@ -13,27 +14,37 @@ const initialState = {
   issue: {},
 };
 
+const findIssue = (issues, number) =>
+  issues.find((issue) => issue.number === number);
+
+const formatIssue = (issue) => ({
+  ...issue,
+  created_at: dateFormatter(issue.created_at),
+});
+
+const formatIssues = (issues) => issues.map(formatIssue);
+
 const issueReducer = (state, action) => {
   switch (action.type) {
     case 'INITIAL_ISSUES':
       return {
         ...state,
-        issues: [...action.payload],
+        issues: formatIssues(action.payload),
       };
     case 'ADD_ISSUES':
       return {
         ...state,
-        issues: [...state.issues, ...action.payload],
+        issues: [...state.issues, ...formatIssues(action.payload)],
       };
     case 'FIND_ISSUE':
       return {
         ...state,
-        issue: state.issues.find((issue) => issue.number === action.payload),
+        issue: findIssue(state.issues, action.payload),
       };
     case 'GET_ISSUE':
       return {
         ...state,
-        issue: action.payload,
+        issue: formatIssue(action.payload),
       };
     case 'GET_REPO':
       return {
